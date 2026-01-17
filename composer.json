@@ -3,7 +3,7 @@
     "description": "desarrollo",
     "autoload": {
         "psr-4": {
-            "JcAs\\GpsBridge\\": "src/"
+            "App\\": "src/"
         }
     },
     "authors": [
