@@ -1,0 +1,17 @@
+{
+    "name": "jc_as/gps-bridge",
+    "description": "desarrollo",
+    "autoload": {
+        "psr-4": {
+            "JcAs\\GpsBridge\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Julio César Flores Fuentes"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}
