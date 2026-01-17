@@ -16,7 +16,7 @@ use RuntimeException;
  * durante todo el ciclo de vida de la aplicación, optimizando recursos.
  * 
  * @package App\Core
- * @author Tu nombre
+ * @author Julio César Flores Fuentes
  * @version 1.0.0
  */
 class Database
