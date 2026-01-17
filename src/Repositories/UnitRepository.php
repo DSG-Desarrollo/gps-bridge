@@ -23,4 +23,21 @@ class UnitRepository
 
         return $stmt->fetchAll();
     }
+
+    /**
+     * Obtiene las unidades de un usuario
+     */
+    public function getUnitsByUser(int $userId): array
+    {
+        $sql = "
+            SELECT id_unidad, wa_unit_id, wa_name
+            FROM unidades
+            WHERE id_usuario = ? AND estado_unidad = 'A'
+        ";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+
+        return $stmt->fetchAll();
+    }
 }
