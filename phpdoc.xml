@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpdocumentor
+    configVersion="3"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://docs.phpdoc.org/latest/phpdoc.xsd"
+>
+    <title>GPS Bridge - Documentación Técnica</title>
+
+    <paths>
+        <output>docs</output>
+    </paths>
+
+    <version number="1.0.0"/>
+
+    <files>
+        <directory>src</directory>
+        <directory>config</directory>
+    </files>
+</phpdocumentor>

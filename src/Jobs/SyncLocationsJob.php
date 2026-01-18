@@ -24,12 +24,7 @@ class SyncLocationsJob
         $getParams = Wialon::searchItemsWithLocation();
         $users = $this->users->getUsersByIntegration('cempro');
 
-        print_r($getParams);
-
         foreach ($users as $user) {
-
-            echo "Login Wialon: " . $user['wa_cuenta'] . PHP_EOL;
-
             $login = $wialonService->login($user['wa_token']);
 
             if (!$login) {
@@ -37,12 +32,10 @@ class SyncLocationsJob
                 continue;
             }
 
-            echo "User: " . $user['wa_token'] . PHP_EOL;
             $units = $this->units->getUnitsByUser($user['id_usuario']);
 
             foreach ($units as $unit) {
                 $position = $wialonService->call("core_search_items", $getParams);
-                echo "Unit: " . $unit['wa_unit_id'] . PHP_EOL;
 
                 if (!$position) {
                     continue;
@@ -51,9 +44,6 @@ class SyncLocationsJob
                 print_r($position);
             }
         }
-        //$units = $this->units->getActiveUnits();
-
-        //echo "Units loaded: " . count($units) . PHP_EOL;
 
         // Next step:
         // Send to Wialon → Cempro

@@ -12,7 +12,19 @@
       "name": "Julio César Flores Fuentes"
     }
   ],
+  "scripts": {
+    "docs": "phpdoc"
+  },
   "require": {
-    "vlucas/phpdotenv": "^5.6"
+    "vlucas/phpdotenv": "^5.6",
+    "phpdocumentor/shim": "^3.9"
+  },
+  "require-dev": {
+    "phpdocumentor/phpdocumentor": "*"
+  },
+  "config": {
+    "allow-plugins": {
+      "phpdocumentor/shim": true
+    }
   }
 }
