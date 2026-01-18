@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Config\Wialon\WialonError;
+
 class WialonService
 {
     private string $sid = '';
@@ -19,16 +21,27 @@ class WialonService
     // AUTH
     // --------------------
 
+    /**
+     * Inicia sesión con un token de Wialon
+     * 
+     * @param string $token Token de autenticación
+     * @return bool True si el login fue exitoso
+     * @throws \Exception Si hay error en el login
+     */
     public function login(string $token): bool
     {
-        $payload = [
-            'token' => $token
-        ];
+        $payload = ['token' => $token];
 
         $response = $this->call('token/login', $payload);
 
+        // Verificar si hay error
+        if (WialonError::hasError($response)) {
+            $errorMsg = WialonError::getErrorFromResponse($response);
+            throw new \Exception("Login failed: {$errorMsg}");
+        }
+
         if (!isset($response['eid'])) {
-            return false;
+            throw new \Exception("Login failed: No session ID received");
         }
 
         $this->sid = $response['eid'];
@@ -51,75 +64,59 @@ class WialonService
     // MAIN REQUEST
     // --------------------
 
-    private function call(string $action, array $params): array
+    public function call(string $action, array $params): array
     {
-        $svc = str_replace('_', '/', $action);
+        // Lógica EXACTA del código original para construir el servicio
+        if (stripos($action, 'unit_group') === 0) {
+            $svc = $action;
+            $svc[strlen('unit_group')] = '/';
+        } else {
+            // Solo reemplaza el PRIMER underscore
+            $svc = preg_replace('/_/', '/', $action, 1);
+        }
 
-        $payload = array_merge($this->defaultParams, [
+        // Preparar parámetros
+        $allParams = array_replace($this->defaultParams, [
             'svc' => $svc,
             'params' => json_encode($params),
             'sid' => $this->sid
         ]);
 
-        $query = http_build_query($payload);
+        // Construir query string (igual que el original)
+        $queryString = '';
+        foreach ($allParams as $k => $v) {
+            if (strlen($queryString) > 0) {
+                $queryString .= '&';
+            }
+            $encoded = is_object($v) || is_array($v) ? json_encode($v) : $v;
+            $queryString .= $k . '=' . urlencode($encoded);
+        }
 
+        // cURL request
         $ch = curl_init();
-
         curl_setopt_array($ch, [
             CURLOPT_URL => $this->baseApiUrl,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $query,
-            CURLOPT_TIMEOUT => 30
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_POST => 1,
+            CURLOPT_POSTFIELDS => $queryString
         ]);
 
         $result = curl_exec($ch);
 
         if ($result === false) {
-            throw new \Exception('Wialon CURL error: ' . curl_error($ch));
+            $error = curl_error($ch);
+            curl_close($ch);
+            return ['error' => -1, 'message' => $error];
         }
 
         curl_close($ch);
 
         $decoded = json_decode($result, true);
 
-        if (!$decoded) {
-            throw new \Exception('Invalid Wialon JSON response');
+        if ($decoded === null) {
+            return ['error' => -1, 'message' => 'Invalid JSON response'];
         }
 
         return $decoded;
-    }
-
-    // --------------------
-    // BUSINESS METHODS
-    // --------------------
-
-    /**
-     * Get unit last position
-     */
-    public function getUnitLocation(int $unitId): ?array
-    {
-        $params = [
-            'spec' => [
-                'itemsType' => 'avl_unit',
-                'propName' => 'sys_id',
-                'propValueMask' => $unitId,
-                'sortType' => 'sys_id'
-            ],
-            'force' => 1,
-            'flags' => 1025,
-            'from' => 0,
-            'to' => 0
-        ];
-
-        $response = $this->call('core/search_items', $params);
-
-        if (
-            !isset($response['items'][0]['pos'])
-        ) {
-            return null;
-        }
-
-        return $response['items'][0]['pos'];
     }
 }
