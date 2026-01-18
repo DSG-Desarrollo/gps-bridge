@@ -28,7 +28,7 @@ class Wialon
         ];
     }
 
-    public function user_list()
+    public function userList()
     {
         $itemsType = "user";
         $propName = "sys_name";
