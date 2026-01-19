@@ -33,27 +33,48 @@ class SyncLocationsJob
                 continue;
             }
 
+            // Get all units from wialon
+            $response = $wialonService->call("core_search_items", $getParams);
+
+            if (
+                !isset($response['items']) ||
+                empty($response['items'])
+            ) {
+                echo "No positions returned" . PHP_EOL;
+                continue;
+            }
+
+            $wialonIndex = [];
+
+            foreach ($response['items'] as $item) {
+                $wialonIndex[$item['id']] = $item;
+            }
+
             $units = $this->units->getUnitsByUser($user['id_usuario']);
 
             foreach ($units as $unit) {
-                $position = $wialonService->call("core_search_items", $getParams);
 
-                if (!$position) {
+                $waUnitId = $unit['wa_unit_id'];
+
+                if (!isset($wialonIndex[$waUnitId])) {
                     continue;
                 }
 
-                foreach ($position['items'] as $item) {
-                    $payload = WialonMapper::mapToCempro($unit, $item);
-                    print_r($payload);
+                $item = $wialonIndex[$waUnitId];
+
+                if (!isset($item['pos'])) {
+                    continue;
                 }
-                //print_r($position);
 
-                /*$payload = WialonMapper::mapToCempro($unit, $position);
-                print_r($payload);*/
+                $payload = WialonMapper::mapToCempro($unit, $item);
 
-                //$result = json_decode($position, true);
-                //print_r($position['items']);
+                print_r($payload);
+
+                // NEXT:
+                // $cempro->sendLocation($payload);
             }
+
+            $wialonService->logout();
         }
 
         // Next step:
