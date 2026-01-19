@@ -6,6 +6,7 @@ use App\Repositories\UnitRepository;
 use App\Repositories\UserRepository;
 use App\Services\WialonService;
 use Config\Wialon;
+use App\Services\WialonMapper;
 
 class SyncLocationsJob
 {
@@ -41,7 +42,17 @@ class SyncLocationsJob
                     continue;
                 }
 
-                print_r($position);
+                foreach ($position['items'] as $item) {
+                    $payload = WialonMapper::mapToCempro($unit, $item);
+                    print_r($payload);
+                }
+                //print_r($position);
+
+                /*$payload = WialonMapper::mapToCempro($unit, $position);
+                print_r($payload);*/
+
+                //$result = json_decode($position, true);
+                //print_r($position['items']);
             }
         }
 
