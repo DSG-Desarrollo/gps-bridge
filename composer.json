@@ -13,14 +13,13 @@
     }
   ],
   "scripts": {
-    "docs": "phpdoc"
+    "docs": "vendor/bin/phpdoc.bat -d src -t docs"
   },
   "require": {
-    "vlucas/phpdotenv": "^5.6",
-    "phpdocumentor/shim": "^3.9"
+    "vlucas/phpdotenv": "^5.6"
   },
   "require-dev": {
-    "phpdocumentor/phpdocumentor": "*"
+    "phpdocumentor/shim": "^3.9"
   },
   "config": {
     "allow-plugins": {

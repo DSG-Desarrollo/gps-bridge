@@ -45,12 +45,12 @@ class WialonMapper
         $p   = $position['lmsg']['p'] ?? [];
         $pos = $position['pos'] ?? [];
 
-        // 1️⃣ gps_acc: indicador directo de fix
+        // gps_acc: indicador directo de fix
         if (array_key_exists('gps_acc', $p)) {
             return (int)$p['gps_acc'] === 1;
         }
 
-        // 2️⃣ hdop: precisión del GPS (menor es mejor)
+        // hdop: precisión del GPS (menor es mejor)
         if (array_key_exists('hdop', $p)) {
             $hdop = (float)$p['hdop'];
 
@@ -58,12 +58,12 @@ class WialonMapper
             return $hdop > 0 && $hdop <= 5.0;
         }
 
-        // 3️⃣ pos.f: flags de posición (fallback)
+        // pos.f: flags de posición (fallback)
         if (array_key_exists('f', $pos)) {
             return (int)$pos['f'] > 0;
         }
 
-        // 4️⃣ Sin información suficiente → GPS inválido
+        // Sin información suficiente → GPS inválido
         return false;
     }
 
