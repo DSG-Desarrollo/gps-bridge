@@ -7,6 +7,7 @@ use App\Repositories\UserRepository;
 use App\Services\WialonService;
 use Config\Wialon;
 use App\Services\WialonMapper;
+use App\Services\CemproService;
 
 class SyncLocationsJob
 {
@@ -22,6 +23,7 @@ class SyncLocationsJob
     public function handle()
     {
         $wialonService = new WialonService();
+        $cemproService = new CemproService();
         $getParams = Wialon::searchItemsWithLocation();
         $users = $this->users->getUsersByIntegration('cempro');
 
@@ -70,8 +72,31 @@ class SyncLocationsJob
 
                 print_r($payload);
 
+                $timestamp = date('Ymd_His');
+                $unitId = $payload['id'] ?? 'unknown';
+
+                $dir = __DIR__ . '/../../storage/cempro_payloads';
+
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0775, true);
+                }
+
+                $filePath = $dir . "/payload_{$unitId}_{$timestamp}.json";
+
+                file_put_contents(
+                    $filePath,
+                    json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+                );
+
+                //echo "Payload guardado en: {$filePath}" . PHP_EOL;
+
+                $response = $cemproService->sendLocation($payload);
+
+                //echo "Sent unit {$waUnitId} OK" . PHP_EOL;
+
                 // NEXT:
                 // $cempro->sendLocation($payload);
+                // https://staging.gps.gt//index.php
             }
 
             $wialonService->logout();
