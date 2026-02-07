@@ -9,7 +9,7 @@ class Wialon
     public const FLAG_POSITION = 1024;
 
     //Busqueda de uno o muchos articulos de acuerdo a su propiedades
-    public static function searchItemsWithLocation(): array
+    public static function searchItemsWithLocation()
     {
         return [
             'spec' => [
@@ -59,7 +59,7 @@ class Wialon
     }
 
     //Busqueda de articulo(items) por id
-    public static function searchItemById(string $id): array
+    public static function searchItemById(string $id)
     {
         return [
             'id'    => $id,
