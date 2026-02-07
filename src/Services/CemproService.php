@@ -15,7 +15,7 @@ class CemproService
         $this->password = $_ENV['PASSWORD_API'];
     }
 
-    private function log(string $message): void
+    private function log(string $message)
     {
         $logDir  = __DIR__ . '/../../storage/logs';
         $logFile = $logDir . '/cempro.log';

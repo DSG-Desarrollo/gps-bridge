@@ -49,7 +49,7 @@ class WialonService
         return true;
     }
 
-    public function logout(): void
+    public function logout()
     {
         if (!$this->sid) {
             return;

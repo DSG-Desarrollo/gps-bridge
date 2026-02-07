@@ -111,7 +111,7 @@ class Database
      * @throws RuntimeException Si falta algún parámetro requerido
      * @return void
      */
-    private function validateConfig(array $config): void
+    private function validateConfig(array $config)
     {
         $requiredKeys = ['host', 'database', 'port', 'username', 'password'];
         
@@ -161,7 +161,7 @@ class Database
      * 
      * @return bool True si la conexión está activa, false en caso contrario
      */
-    public function isConnected(): bool
+    public function isConnected()
     {
         try {
             return $this->connection->query('SELECT 1') !== false;
@@ -176,7 +176,7 @@ class Database
      * 
      * @return void
      */
-    private function __clone(): void
+    private function __clone()
     {
         // Método vacío para prevenir clonación
     }
@@ -187,7 +187,7 @@ class Database
      * @throws RuntimeException Siempre
      * @return void
      */
-    public function __wakeup(): void
+    public function __wakeup()
     {
         throw new RuntimeException("No se puede deserializar un Singleton");
     }
@@ -200,7 +200,7 @@ class Database
      * 
      * @return void
      */
-    public function disconnect(): void
+    public function disconnect()
     {
         $this->connection = null;
         self::$instance = null;
