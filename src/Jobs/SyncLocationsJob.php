@@ -70,7 +70,14 @@ class SyncLocationsJob
 
                 $payload = WialonMapper::mapToCempro($unit, $item);
 
-                print_r($payload);
+                echo "=== PAYLOAD DEBUG ===" . PHP_EOL;
+                var_dump($payload);
+                echo PHP_EOL;
+
+                foreach ($payload as $key => $value) {
+                    echo "$key => " . gettype($value) . " => " . var_export($value, true) . PHP_EOL;
+                }
+                echo "===================" . PHP_EOL;
 
                 $timestamp = date('Ymd_His');
                 $unitId = $payload['id'] ?? 'unknown';
@@ -89,6 +96,8 @@ class SyncLocationsJob
                 );
 
                 //echo "Payload guardado en: {$filePath}" . PHP_EOL;
+
+                print_r(json_encode($payload));
 
                 $response = $cemproService->sendLocation($payload);
 

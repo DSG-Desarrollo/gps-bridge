@@ -12,20 +12,20 @@ class WialonMapper
         $unix = (int) ($pos['t'] ?? $lmsg['rt'] ?? time());
         $unit = isset($unit['remote_id']) ? $unit['remote_id'] : $position['nm'];
 
-        $lat = isset($pos['y']) ? (float)($pos['y']) : null;
-        $lon = isset($pos['x']) ? (float)($pos['x']) : null;
+        $lat = isset($pos['y']) ? (float)($pos['y']) : 0.0;
+        $lon = isset($pos['x']) ? (float)($pos['x']) : 0.0;
         $speed = isset($pos['s']) ? (float)($pos['s']) : 0.0;
         $heading = isset($pos['c']) ? (float)($pos['c']) : 0.0;
 
         return [
             'timestamp' => self::formatTimestamp($unix),
-            'id'        => (string) ($unit ?? 'unknown'),
-            'lat'       => $lat === null ? null : self::roundCoord($lat),
-            'lon'       => $lon === null ? null : self::roundCoord($lon),
-            'kmph'      => $speed,
-            'heading'   => $heading,
-            'event'     => self::mapEvent($position),
-            'gps'       => self::hasGpsSignal($position)
+            'id'        => (string) $unit,
+            'lat'       => round($lat, 7),      // ✅ Asegurar float con 7 decimales
+            'lon'       => round($lon, 7),      // ✅ Asegurar float con 7 decimales
+            'kmph'      => round($speed, 1),    // ✅ Asegurar float con 1 decimal
+            'heading'   => round($heading, 1),  // ✅ Asegurar float con 1 decimal
+            'event'     => (int) self::mapEvent($position), // ✅ Asegurar integer
+            'gps'       => (bool) self::hasGpsSignal($position), // ✅ Asegurar boolean
         ];
     }
 
@@ -34,9 +34,11 @@ class WialonMapper
         return gmdate('Y-m-d\TH:i:s\Z', $unix);
     }
 
-    private static function roundCoord(float $value): float
+    private static function roundCoord(?float $value): float
     {
-        // max 7 decimals as requested
+        if ($value === null) {
+            return 0.0;
+        }
         return round($value, 7);
     }
 
@@ -45,39 +47,27 @@ class WialonMapper
         $p   = $position['lmsg']['p'] ?? [];
         $pos = $position['pos'] ?? [];
 
-        // gps_acc: indicador directo de fix
         if (array_key_exists('gps_acc', $p)) {
             return (int)$p['gps_acc'] === 1;
         }
 
-        // hdop: precisión del GPS (menor es mejor)
         if (array_key_exists('hdop', $p)) {
             $hdop = (float)$p['hdop'];
-
-            // Valores estándar: <= 5 aceptable
             return $hdop > 0 && $hdop <= 5.0;
         }
 
-        // pos.f: flags de posición (fallback)
         if (array_key_exists('f', $pos)) {
             return (int)$pos['f'] > 0;
         }
 
-        // Sin información suficiente → GPS inválido
         return false;
     }
 
-    /**
-     * Temporary basic event logic
-     * Can be improved later
-     */
     private static function mapEvent(array $pos): int
     {
-        // speed = 0 -> stop
         if (($pos['s'] ?? 0) == 0) {
             return 1; // Parada
         }
-
         return 0; // Sin evento
     }
 }
