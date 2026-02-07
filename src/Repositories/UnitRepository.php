@@ -67,7 +67,7 @@ class UnitRepository
     public function getUnitsByUser(int $userId): array
     {
         $sql = "
-            SELECT id_unidad, wa_unit_id, wa_name
+            SELECT id_unidad, wa_unit_id, remote_id
             FROM unidades
             WHERE id_usuario = ? AND estado_unidad = 'A'
         ";

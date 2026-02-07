@@ -17,7 +17,12 @@ class CemproService
 
     private function log(string $message): void
     {
-        $logFile = __DIR__ . '/../../storage/logs/cempro.log';
+        $logDir  = __DIR__ . '/../../storage/logs';
+        $logFile = $logDir . '/cempro.log';
+
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0755, true);
+        }
 
         $date = date('Y-m-d H:i:s');
         file_put_contents(
@@ -75,19 +80,19 @@ class CemproService
             );
         }
 
-if ($response === false) {
-    $this->log('CURL ERROR: ' . curl_error($ch));
-    throw new \Exception(
-        'Cempro CURL error: ' . curl_error($ch)
-    );
-}
+        if ($response === false) {
+            $this->log('CURL ERROR: ' . curl_error($ch));
+            throw new \Exception(
+                'Cempro CURL error: ' . curl_error($ch)
+            );
+        }
 
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-$this->log('REQUEST URL: ' . $url);
-$this->log('REQUEST PAYLOAD: ' . json_encode($payload));
-$this->log('HTTP CODE: ' . $httpCode);
-$this->log('RESPONSE RAW: ' . $response);
+        $this->log('REQUEST URL: ' . $url);
+        $this->log('REQUEST PAYLOAD: ' . json_encode($payload));
+        $this->log('HTTP CODE: ' . $httpCode);
+        $this->log('RESPONSE RAW: ' . $response);
 
         return $decoded;
     }

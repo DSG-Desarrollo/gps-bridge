@@ -10,7 +10,7 @@ class WialonMapper
         $lmsg = $position['lmsg'] ?? [];
 
         $unix = (int) ($pos['t'] ?? $lmsg['rt'] ?? time());
-        $unit = isset($unit['wa_name']) ? $unit['wa_name'] : $position['nm'];
+        $unit = isset($unit['remote_id']) ? $unit['remote_id'] : $position['nm'];
 
         $lat = isset($pos['y']) ? (float)($pos['y']) : null;
         $lon = isset($pos['x']) ? (float)($pos['x']) : null;
