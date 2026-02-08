@@ -38,7 +38,7 @@ class CemproService
     private function validatePayload(array $payload): void
     {
         $required = ['timestamp', 'id', 'lat', 'lon', 'kmph', 'heading', 'event', 'gps'];
-        
+
         foreach ($required as $field) {
             if (!isset($payload[$field])) {
                 throw new \InvalidArgumentException("Missing required field: $field");
@@ -75,25 +75,43 @@ class CemproService
     public function sendLocation(array $payload)
     {
         // ✅ Validar antes de enviar
-        $this->validatePayload($payload);
+        //$this->validatePayload($payload);
 
         $url = $this->host . '/point';
-        
+
         // ✅ Usar JSON_PRESERVE_ZERO_FRACTION para mantener .0 en números
-        $jsonPayload = json_encode($payload, JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES);
-        
+        /*$jsonPayload = json_encode($payload, JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES);
+
         if ($jsonPayload === false) {
             throw new \RuntimeException('JSON encoding failed: ' . json_last_error_msg());
-        }
+        }*/
 
-        $this->log('REQUEST URL: ' . $url);
+        /*$this->log('REQUEST URL: ' . $url);
         $this->log('REQUEST PAYLOAD: ' . $jsonPayload);
-        
-        echo "Sending payload: " . $jsonPayload . PHP_EOL;
 
-        $ch = curl_init();
+        echo "Sending payload: " . $jsonPayload . PHP_EOL;*/
 
-        curl_setopt_array($ch, [
+        // Consts
+        $json_params = json_encode($payload);
+        $headers = array(
+            'Content-Type: application/json',
+            'Accept: application/json'
+        );
+
+        $ch = curl_init($url);
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->apiKey . ':' . $this->password);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_params);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        //curl_setopt($ch, CURLOPT_STDERR, $verbose);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+
+        /*curl_setopt_array($ch, [
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
@@ -105,7 +123,7 @@ class CemproService
             CURLOPT_POSTFIELDS => $jsonPayload, // ✅ Usar string JSON directamente
             CURLOPT_TIMEOUT => 20,
             CURLOPT_ENCODING => '', // ✅ Permitir compresión
-        ]);
+        ]);*/
 
         $response = curl_exec($ch);
 
@@ -129,7 +147,7 @@ class CemproService
         }
 
         $decoded = json_decode($response, true);
-        
+
         if (json_last_error() !== JSON_ERROR_NONE) {
             $this->log('JSON DECODE ERROR: ' . json_last_error_msg());
             throw new \RuntimeException('Failed to decode response: ' . json_last_error_msg());

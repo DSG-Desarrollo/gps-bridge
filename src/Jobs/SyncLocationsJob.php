@@ -99,16 +99,16 @@ class SyncLocationsJob
 
                 //print_r(json_encode($payload));
 
-                $payload2 = [
-                    "timestamp" => "2026-02-07T18:32:11Z",
+                $payload2 = array(
+                    "timestamp" => "2026-02-08T04:27:37Z",
                     "id" => "EQ8109074",
                     "lat" => 40.713637,
                     "lon" => -74.013207,
                     "kmph" => 40.0,
                     "heading" => 17.5,
                     "event" => 1,
-                    "gps" => false
-                ];
+                    "gps" => true
+                );
 
                 $response = $cemproService->sendLocation($payload2);
 
