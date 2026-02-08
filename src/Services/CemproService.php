@@ -98,8 +98,7 @@ class CemproService
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
             CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json; charset=utf-8', // ✅ Agregar charset
-                'Accept: application/json',
+                'Content-Type: application/json', // ✅ Agregar charset
             ],
             CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_USERPWD => $this->apiKey . ':' . $this->password,
