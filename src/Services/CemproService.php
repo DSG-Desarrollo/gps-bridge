@@ -77,19 +77,18 @@ class CemproService
         // ✅ Validar antes de enviar
         //$this->validatePayload($payload);
 
-        $url = $this->host . '/point';
+        $hostname = $this->host . '/point';
 
         // ✅ Usar JSON_PRESERVE_ZERO_FRACTION para mantener .0 en números
-        /*$jsonPayload = json_encode($payload, JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES);
+        $jsonPayload = json_encode($payload, JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES);
 
         if ($jsonPayload === false) {
             throw new \RuntimeException('JSON encoding failed: ' . json_last_error_msg());
-        }*/
+        }
 
-        /*$this->log('REQUEST URL: ' . $url);
+        $this->log('REQUEST URL: ' . $hostname);
         $this->log('REQUEST PAYLOAD: ' . $jsonPayload);
 
-        echo "Sending payload: " . $jsonPayload . PHP_EOL;*/
 
         // Consts
         $json_params = json_encode($payload);
@@ -98,7 +97,9 @@ class CemproService
             'Accept: application/json'
         );
 
-        $ch = curl_init($url);
+        echo "Sending payload: " . $json_params . PHP_EOL;
+
+        $ch = curl_init($hostname);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
@@ -109,21 +110,6 @@ class CemproService
         curl_setopt($ch, CURLOPT_VERBOSE, true);
         //curl_setopt($ch, CURLOPT_STDERR, $verbose);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-
-        /*curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json', // ✅ Agregar charset
-            ],
-            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
-            CURLOPT_USERPWD => $this->apiKey . ':' . $this->password,
-            CURLOPT_POSTFIELDS => $jsonPayload, // ✅ Usar string JSON directamente
-            CURLOPT_TIMEOUT => 20,
-            CURLOPT_ENCODING => '', // ✅ Permitir compresión
-        ]);*/
 
         $response = curl_exec($ch);
 

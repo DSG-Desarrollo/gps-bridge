@@ -71,7 +71,7 @@ class SyncLocationsJob
                 $payload = WialonMapper::mapToCempro($unit, $item);
 
                 echo "=== PAYLOAD DEBUG ===" . PHP_EOL;
-                //var_dump($payload);
+                var_dump($payload);
                 echo PHP_EOL;
 
                 foreach ($payload as $key => $value) {
@@ -110,7 +110,7 @@ class SyncLocationsJob
                     "gps" => true
                 );
 
-                $response = $cemproService->sendLocation($payload2);
+                $response = $cemproService->sendLocation($payload);
 
                 //echo "Sent unit {$waUnitId} OK" . PHP_EOL;
 

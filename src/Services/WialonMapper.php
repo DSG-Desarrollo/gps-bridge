@@ -4,11 +4,11 @@ namespace App\Services;
 
 class WialonMapper
 {
-    public static function mapToCempro(array $unit, array $position): array
+    public static function mapToCempro(array $unit, array $position)
     {
+        var_dump($position);
         $pos = $position['pos'] ?? [];
         $lmsg = $position['lmsg'] ?? [];
-
         $unix = (int) ($pos['t'] ?? $lmsg['rt'] ?? time());
         $unit = isset($unit['remote_id']) ? $unit['remote_id'] : $position['nm'];
 
@@ -17,29 +17,31 @@ class WialonMapper
         $speed = isset($pos['s']) ? (float)($pos['s']) : 0.0;
         $heading = isset($pos['c']) ? (float)($pos['c']) : 0.0;
 
-        return [
+        return array(
             'timestamp' => self::formatTimestamp($unix),
             'id'        => (string) $unit,
-            'lat'       => round($lat, 7),      // ✅ Asegurar float con 7 decimales
-            'lon'       => round($lon, 7),      // ✅ Asegurar float con 7 decimales
-            'kmph'      => round($speed, 1),    // ✅ Asegurar float con 1 decimal
-            'heading'   => round($heading, 1),  // ✅ Asegurar float con 1 decimal
-            'event'     => (int) self::mapEvent($position), // ✅ Asegurar integer
-            'gps'       => (bool) self::hasGpsSignal($position), // ✅ Asegurar boolean
-        ];
+            'lat'       => self::ensureFloat(round($lat, 6)),      // ✅ Fuerza float
+            'lon'       => self::ensureFloat(round($lon, 6)),      // ✅ Fuerza float
+            'kmph'      => self::ensureFloat(round($speed, 1)),    // ✅ Fuerza float
+            'heading'   => self::ensureFloat(round($heading, 1)),  // ✅ Fuerza float
+            'event'     => (int) self::mapEvent($position),
+            'gps'       => (bool) self::hasGpsSignal($position),
+        );
+    }
+
+    /**
+     * Asegura que un número se serialice como float en JSON
+     */
+    private static function ensureFloat(float $value): float
+    {
+        // Fuerza que siempre tenga al menos un decimal
+        return (float) number_format($value, strpos((string)$value, '.') !== false ? strlen(substr(strrchr((string)$value, '.'), 1)) : 1, '.', '');
     }
 
     private static function formatTimestamp(int $unix): string
     {
-        return gmdate('Y-m-d\TH:i:s\Z', $unix);
-    }
-
-    private static function roundCoord(?float $value): float
-    {
-        if ($value === null) {
-            return 0.0;
-        }
-        return round($value, 7);
+        // ISO 8601 con milisegundos fijos
+        return gmdate('Y-m-d\TH:i:s', $unix) . '.000Z';
     }
 
     private static function hasGpsSignal(array $position): bool
