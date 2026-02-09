@@ -6,7 +6,7 @@ class WialonMapper
 {
     public static function mapToCempro(array $unit, array $position)
     {
-        var_dump($position);
+        //var_dump($position);
         $pos = $position['pos'] ?? [];
         $lmsg = $position['lmsg'] ?? [];
         $unix = (int) ($pos['t'] ?? $lmsg['rt'] ?? time());
