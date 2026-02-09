@@ -1,5 +1,7 @@
 <?php
 
+echo "[CRON TEST] Ejecutado: " . date('Y-m-d H:i:s') . PHP_EOL;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Load env + app config
