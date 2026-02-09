@@ -4,3 +4,5 @@
 /.phpdoc/
 /docs/
 /storage/*
+/storage/logs/*
+/logs/*
