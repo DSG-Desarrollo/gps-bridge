@@ -127,10 +127,11 @@ class CemproService
 
         $json_params = json_encode($payload);
 
-        $headers = array(
-            'Content-Type: application/json',
-            'Accept: application/json'
-        );
+$headers = [
+    'Content-Type: application/json',
+    'Accept: application/json',
+    'Content-Length: ' . strlen($jsonPayload)
+];
 
         echo "Sending payload: " . $json_params . PHP_EOL;
 
@@ -140,7 +141,7 @@ class CemproService
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
         curl_setopt($ch, CURLOPT_USERPWD, $this->apiKey . ':' . $this->password);
         curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_params);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_VERBOSE, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
