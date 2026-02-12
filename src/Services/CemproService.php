@@ -79,7 +79,7 @@ class CemproService
 
         $hostname = $this->host . '/point';
 
-        // ✅ Usar JSON_PRESERVE_ZERO_FRACTION para mantener .0 en números
+        // Usar JSON_PRESERVE_ZERO_FRACTION para mantener .0 en números
         $jsonPayload = json_encode($payload, JSON_PRESERVE_ZERO_FRACTION | JSON_UNESCAPED_SLASHES);
 
         if ($jsonPayload === false) {
