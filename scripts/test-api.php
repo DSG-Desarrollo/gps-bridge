@@ -4,17 +4,17 @@ $user = '3269_68af4001d049f';
 $pass = '123456';
 
 $payload = array(
-    "timestamp" => "2026-02-08T04:27:37Z",
+    "timestamp" => "2026-02-11T21:54:41.000Z",
     "id"        => "EQ8109074",
-    "lat" => 40.713637,
-    "lon" => -74.013207,
-    "kmph" => 40.0,
-    "heading" => 17.5,
+    "lat" => 89.735367,
+    "lon" => -13.697198,
+    "kmph" => 49.0,
+    "heading" => 27.0,
     "event" => 1,
-    "gps" => true  // ✅ CAMBIO CRÍTICO: string en lugar de boolean
+    "gps" => true
 );
 
-$json_params = json_encode($payload);
+$json_params = json_encode($payload, JSON_PRESERVE_ZERO_FRACTION);
 
 $headers = array(
     'Content-Type: application/json',

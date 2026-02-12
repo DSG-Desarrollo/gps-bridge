@@ -89,7 +89,6 @@ class CemproService
         $this->log('REQUEST URL: ' . $hostname);
         $this->log('REQUEST PAYLOAD: ' . $jsonPayload);
 
-
         // Consts
         $json_params = json_encode($payload);
         $headers = array(

@@ -113,6 +113,19 @@ class WialonService
 
         $decoded = json_decode($result, true);
 
+        $dir = __DIR__ . '/../../storage/wialon_responses';
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0775, true);
+        }
+
+        $safeAction = str_replace(['/', '\\'], '_', $action);
+
+        file_put_contents(
+            $dir . "/{$safeAction}_{$this->sid}_" . date('Ymd_His') . ".json",
+            json_encode($decoded, JSON_PRETTY_PRINT)
+        );
+
         if ($decoded === null) {
             return ['error' => -1, 'message' => 'Invalid JSON response'];
         }

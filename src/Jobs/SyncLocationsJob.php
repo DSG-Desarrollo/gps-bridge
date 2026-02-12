@@ -92,27 +92,25 @@ class SyncLocationsJob
 
                 file_put_contents(
                     $filePath,
-                    json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
+                    json_encode($payload)
                 );
 
-                //echo "Payload guardado en: {$filePath}" . PHP_EOL;
+                echo "Payload guardado en: {$filePath}" . PHP_EOL;
 
-                //print_r(json_encode($payload));
+                print_r(json_encode($payload));
 
                 $payload2 = array(
-                    "timestamp" => "2026-02-08T04:27:37Z",
-                    "id" => "EQ8109074",
-                    "lat" => 40.713637,
-                    "lon" => -74.013207,
-                    "kmph" => 40.0,
-                    "heading" => 17.5,
+                    "timestamp" => "2026-02-11T21:54:41.000Z",
+                    "id"        => "EQ8109074",
+                    "lat" => 89.735367,
+                    "lon" => -13.697198,
+                    "kmph" => 0,
+                    "heading" => 113,
                     "event" => 1,
                     "gps" => true
                 );
 
-                $response = $cemproService->sendLocation($payload);
-
-                //echo "Sent unit {$waUnitId} OK" . PHP_EOL;
+                $response = $cemproService->sendLocation($payload2);
 
                 // NEXT:
                 // $cempro->sendLocation($payload);
