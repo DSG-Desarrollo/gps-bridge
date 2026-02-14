@@ -292,14 +292,14 @@ class WialonMapper
     {
         $behaviorType = isset($params['sha_behavior_type'])
             ? (int) $params['sha_behavior_type']
-            : null;
+            : 0;
 
-        return match ($behaviorType) {
-            1       => self::EVENT_HARSH_BRAKE,
-            2       => self::EVENT_HARSH_ACCELERATION,
-            3       => self::EVENT_HARSH_TURN,
-            default => self::EVENT_NONE,
-        };
+        switch ($behaviorType) {
+            case 1:  return self::EVENT_HARSH_BRAKE;
+            case 2:  return self::EVENT_HARSH_ACCELERATION;
+            case 3:  return self::EVENT_HARSH_TURN;
+            default: return self::EVENT_NONE;
+        }
     }
 
     // -------------------------------------------------------------------------
