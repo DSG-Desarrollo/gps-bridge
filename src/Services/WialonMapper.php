@@ -111,7 +111,7 @@ class WialonMapper
      *
      * @return array<string, mixed> Payload listo para enviar a Cempro.
      */
-    public static function mapToCempro(array $unit, array $position): array
+    public static function mapToCempro(array $unit, array $position)
     {
         $pos   = $position['pos']   ?? [];
         $lmsg  = $position['lmsg'] ?? [];
@@ -176,7 +176,7 @@ class WialonMapper
      *
      * @return int Código de evento Cempro (0–13).
      */
-    public static function resolveEvent(array $position): int
+    public static function resolveEvent(array $position)
     {
         $params = $position['lmsg']['p'] ?? [];
         $pos    = $position['pos']       ?? [];
@@ -288,7 +288,7 @@ class WialonMapper
      *
      * @return int Código de evento Cempro.
      */
-    private static function resolveHarshDriving(array $params): int
+    private static function resolveHarshDriving(array $params)
     {
         $behaviorType = isset($params['sha_behavior_type'])
             ? (int) $params['sha_behavior_type']
@@ -327,7 +327,7 @@ class WialonMapper
      *
      * @return bool True si existe señal GPS válida.
      */
-    private static function hasGpsSignal(array $position): bool
+    private static function hasGpsSignal(array $position)
     {
         $params = $position['lmsg']['p'] ?? [];
         $pos    = $position['pos']       ?? [];
@@ -364,7 +364,7 @@ class WialonMapper
      *
      * @return string Timestamp formateado en estándar ISO 8601 UTC.
      */
-    private static function formatTimestamp(int $unix): string
+    private static function formatTimestamp(int $unix)
     {
         return gmdate('Y-m-d\TH:i:s.000\Z', $unix);
     }
