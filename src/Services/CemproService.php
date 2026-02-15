@@ -110,6 +110,15 @@ class CemproService
     {
         $hostname = $this->host . '/point';
 
+        var_dump($hostname);
+
+        $payload['kmph'] = (float) $payload['kmph'];
+        $payload['heading'] = (float) $payload['heading'];
+        $payload['lat'] = (float) $payload['lat'];
+        $payload['lon'] = (float) $payload['lon'];
+        $payload['event'] = (int) $payload['event'];
+        $payload['gps'] = (bool) $payload['gps'];
+
         // Usar JSON_PRESERVE_ZERO_FRACTION para mantener .0 en números
         $jsonPayload = json_encode(
             $payload,
@@ -125,15 +134,14 @@ class CemproService
         $this->log('REQUEST URL: ' . $hostname);
         $this->log('REQUEST PAYLOAD: ' . $jsonPayload);
 
-        $json_params = json_encode($payload);
-
-$headers = [
-    'Content-Type: application/json',
-    'Accept: application/json',
-    'Content-Length: ' . strlen($jsonPayload)
-];
-
-        echo "Sending payload: " . $json_params . PHP_EOL;
+        //$json_params = json_encode($payload);
+        $headers = [
+            'Content-Type: application/json',
+            'Accept: */*',
+            'Body:' . strlen($jsonPayload),
+            'Connection: close'
+        ];
+        //echo "Sending payload: " . $json_params . PHP_EOL;
 
         $ch = curl_init($hostname);
 
@@ -144,7 +152,8 @@ $headers = [
         curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_VERBOSE, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Cambiar a true en producción
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
         $response = curl_exec($ch);
 
@@ -154,9 +163,7 @@ $headers = [
 
             $this->log('CURL ERROR: ' . $error);
 
-            throw new \Exception(
-                'Cempro CURL error: ' . $error
-            );
+            throw new \Exception('Cempro CURL error: ' . $error);
         }
 
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
